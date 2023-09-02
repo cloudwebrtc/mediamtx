@@ -231,7 +231,8 @@ func (s *webRTCHTTPServer) onRequest(ctx *gin.Context) {
 			ctx.Writer.WriteHeader(http.StatusNoContent)
 
 		case http.MethodPost:
-			if ctx.Request.Header.Get("Content-Type") != "application/sdp" {
+			// Some HTTP client agent's `Content-Type` will contain `charset`, e.g "application/sdp; charset=utf-8"
+			if !strings.Contains(strings.ToLower(ctx.Request.Header.Get("Content-Type")), "application/sdp") {
 				ctx.Writer.WriteHeader(http.StatusBadRequest)
 				return
 			}
